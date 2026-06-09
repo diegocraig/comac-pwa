@@ -1,0 +1,318 @@
+/* ==========================================================================
+   DGES Corrientes — Design Tokens
+   Dirección General de Nivel Superior · Ministerio de Educación de Corrientes
+   ========================================================================== */
+
+/* ---- Fonts (Barlow family) ---- */
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 100; src: url('fonts/Barlow-Thin.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: italic; font-weight: 100; src: url('fonts/Barlow-ThinItalic.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 200; src: url('fonts/Barlow-ExtraLight.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: italic; font-weight: 200; src: url('fonts/Barlow-ExtraLightItalic.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 300; src: url('fonts/Barlow-Light.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: italic; font-weight: 300; src: url('fonts/Barlow-LightItalic.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 400; src: url('fonts/Barlow-Regular.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: italic; font-weight: 400; src: url('fonts/Barlow-Italic.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 500; src: url('fonts/Barlow-Medium.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: italic; font-weight: 500; src: url('fonts/Barlow-MediumItalic.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 600; src: url('fonts/Barlow-SemiBold.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: italic; font-weight: 600; src: url('fonts/Barlow-SemiBoldItalic.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 700; src: url('fonts/Barlow-Bold.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: italic; font-weight: 700; src: url('fonts/Barlow-BoldItalic.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 800; src: url('fonts/Barlow-ExtraBold.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: italic; font-weight: 800; src: url('fonts/Barlow-ExtraBoldItalic.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: normal; font-weight: 900; src: url('fonts/Barlow-Black.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Barlow'; font-style: italic; font-weight: 900; src: url('fonts/Barlow-BlackItalic.ttf') format('truetype'); font-display: swap; }
+
+:root {
+  /* ======================================================================
+     CORE PALETTE — Paleta cromática principal
+     Derived from the official brand guide (paleta-colores.jpg).
+     Uses bilingual Spanish names that match the brand document.
+     ====================================================================== */
+  --blanco:          #FFFFFF;
+  --amarillo-claro:  #FACD05; /* Pantone 118 C */
+  --amarillo-oscuro: #FAAE05; /* Pantone 1235 C */
+  --rojo-claro:      #F4492E; /* Pantone 172 C */
+  --rojo-oscuro:     #EA2F09; /* Pantone 485 C */
+  --bordo:           #6F0603; /* Pantone 1815 C */
+
+  --gris-claro:      #EDEDED; /* Cool Gray 1 C */
+  --celeste-claro:   #90B4E1; /* Pantone 283 C */
+  --celeste-oscuro:  #769FD3; /* Pantone 284 C */
+  --verde-claro:     #719C29; /* Pantone 369 C */
+  --verde-oscuro:    #356F23; /* Pantone 364 C */
+  --negro:           #2E2D2C; /* Pantone Black C */
+
+  /* ======================================================================
+     EXTENDED PALETTE — Paleta cromática extendida
+     Softer/deeper stops for charts, illustrations, badges, infographics.
+     ====================================================================== */
+  --ext-yellow-1:    #FACD05;
+  --ext-yellow-2:    #FAAE05;
+  --ext-orange-1:    #F68E13;
+  --ext-orange-2:    #F36D21;
+  --ext-orange-3:    #B45F04;
+  --ext-bordo:       #6F0603;
+  --ext-coral:       #FA8072;
+  --ext-red-1:       #F4492E;
+  --ext-red-2:       #EA2F09;
+
+  --ext-lavender-1:  #8E7CC3;
+  --ext-lavender-2:  #6B5CB7;
+  --ext-blue-deep:   #1F5D9B;
+  --ext-celeste-1:   #769FD3;
+  --ext-celeste-2:   #90B4E1;
+  --ext-teal-1:      #58A89A;
+  --ext-teal-2:      #008275;
+  --ext-green-1:     #356F23;
+  --ext-green-2:     #719C29;
+
+  /* ======================================================================
+     SEMANTIC TOKENS — general-purpose foreground / background / surface
+     ====================================================================== */
+  /* Foreground */
+  --fg-1: #2E2D2C;            /* primary text (negro) */
+  --fg-2: #4a4947;            /* secondary */
+  --fg-3: #7a7876;            /* tertiary / meta */
+  --fg-muted: #9a9896;
+  --fg-on-dark: #FFFFFF;
+  --fg-on-accent: #FFFFFF;
+  --fg-link: #1F5D9B;
+  --fg-link-hover: #6F0603;
+
+  /* Backgrounds / surfaces */
+  --bg-page: #FFFFFF;
+  --bg-subtle: #FAFAFA;
+  --bg-muted: #EDEDED;        /* gris claro */
+  --bg-elevated: #FFFFFF;
+  --bg-inverse: #2E2D2C;
+  --bg-accent: #6F0603;        /* bordó — institutional */
+  --bg-accent-soft: #FFF4E8;   /* warm wash for accent regions */
+
+  /* Borders */
+  --border-1: #E4E1DC;
+  --border-2: #D4D0CB;
+  --border-strong: #2E2D2C;
+  --border-focus: #1F5D9B;
+
+  /* Semantic intents */
+  --intent-success: #356F23;
+  --intent-success-bg: #EAF1DF;
+  --intent-warning: #FAAE05;
+  --intent-warning-bg: #FFF4D6;
+  --intent-danger:  #EA2F09;
+  --intent-danger-bg: #FDE4DE;
+  --intent-info:    #1F5D9B;
+  --intent-info-bg: #E5EEF8;
+
+  /* Brand role tokens — pick these in components for meaning */
+  --brand-primary:   #6F0603; /* bordó — headers, primary CTAs */
+  --brand-secondary: #FACD05; /* amarillo claro — highlights, accents */
+  --brand-tertiary:  #356F23; /* verde oscuro — success/academic */
+  --brand-support:   #769FD3; /* celeste oscuro — links, information */
+
+  /* ======================================================================
+     TYPOGRAPHY
+     ====================================================================== */
+  --font-sans: 'Barlow', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-display: 'Barlow', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Weights */
+  --fw-thin: 100;
+  --fw-extralight: 200;
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
+  --fw-black: 900;
+
+  /* Type scale — display-forward, inspired by Barlow's condensed feel */
+  --fs-display-xl: 88px;
+  --fs-display-l:  68px;
+  --fs-display-m:  52px;
+  --fs-h1: 44px;
+  --fs-h2: 34px;
+  --fs-h3: 26px;
+  --fs-h4: 20px;
+  --fs-h5: 17px;
+  --fs-lead: 20px;
+  --fs-body: 16px;
+  --fs-small: 14px;
+  --fs-caption: 12px;
+  --fs-overline: 11px;
+
+  /* Line heights */
+  --lh-tight: 1.05;
+  --lh-display: 1.1;
+  --lh-heading: 1.2;
+  --lh-body: 1.55;
+  --lh-relaxed: 1.75;
+
+  /* Letter spacing */
+  --ls-tight: -0.01em;
+  --ls-normal: 0;
+  --ls-wide: 0.04em;
+  --ls-overline: 0.14em;
+
+  /* ======================================================================
+     SPACING (4px grid)
+     ====================================================================== */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* ======================================================================
+     RADII — modest; institutional, not playful
+     ====================================================================== */
+  --radius-none: 0;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 16px;
+  --radius-pill: 999px;
+
+  /* ======================================================================
+     SHADOWS — soft + sparing
+     ====================================================================== */
+  --shadow-xs: 0 1px 2px rgba(46, 45, 44, 0.06);
+  --shadow-sm: 0 1px 3px rgba(46, 45, 44, 0.08), 0 1px 2px rgba(46, 45, 44, 0.04);
+  --shadow-md: 0 4px 10px rgba(46, 45, 44, 0.08), 0 2px 4px rgba(46, 45, 44, 0.04);
+  --shadow-lg: 0 12px 28px rgba(46, 45, 44, 0.10), 0 4px 10px rgba(46, 45, 44, 0.05);
+  --shadow-ring: 0 0 0 3px rgba(31, 93, 155, 0.28); /* focus ring on celeste */
+
+  /* ======================================================================
+     MOTION
+     ====================================================================== */
+  --ease-standard: cubic-bezier(.4, .0, .2, 1);
+  --ease-emphasize: cubic-bezier(.2, .8, .2, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+
+  /* ======================================================================
+     LAYOUT
+     ====================================================================== */
+  --container-narrow: 720px;
+  --container-default: 1080px;
+  --container-wide: 1280px;
+  --container-xl: 1440px;
+}
+
+/* ==========================================================================
+   Semantic typography — canonical element styles
+   Apply ".dges" on body (or a wrapper) or import these and let them
+   cascade on the raw element.
+   ========================================================================== */
+
+html { color: var(--fg-1); background: var(--bg-page); }
+body, .dges {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--fg-1);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.dges h1, .dges .h1 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-extrabold);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-tight);
+  margin: 0 0 var(--space-4);
+}
+.dges h2, .dges .h2 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-tight);
+  margin: 0 0 var(--space-3);
+}
+.dges h3, .dges .h3 {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  margin: 0 0 var(--space-3);
+}
+.dges h4, .dges .h4 {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-heading);
+  margin: 0 0 var(--space-2);
+}
+.dges h5, .dges .h5 {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h5);
+  line-height: var(--lh-heading);
+  margin: 0 0 var(--space-2);
+}
+
+.dges .display-xl { font-size: var(--fs-display-xl); font-weight: var(--fw-black); line-height: var(--lh-tight); letter-spacing: var(--ls-tight); }
+.dges .display-l  { font-size: var(--fs-display-l);  font-weight: var(--fw-extrabold); line-height: var(--lh-display); letter-spacing: var(--ls-tight); }
+.dges .display-m  { font-size: var(--fs-display-m);  font-weight: var(--fw-extrabold); line-height: var(--lh-display); letter-spacing: var(--ls-tight); }
+
+.dges .lead { font-size: var(--fs-lead); line-height: var(--lh-relaxed); font-weight: var(--fw-regular); color: var(--fg-2); }
+.dges .body { font-size: var(--fs-body); line-height: var(--lh-body); }
+.dges .small { font-size: var(--fs-small); line-height: var(--lh-body); color: var(--fg-2); }
+.dges .caption { font-size: var(--fs-caption); line-height: var(--lh-body); color: var(--fg-3); }
+.dges .overline {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-overline);
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+
+.dges a {
+  color: var(--fg-link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+.dges a:hover { color: var(--fg-link-hover); }
+
+.dges code, .dges .mono {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  background: var(--bg-muted);
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-xs);
+}
+
+.dges hr {
+  border: 0;
+  border-top: 1px solid var(--border-1);
+  margin: var(--space-8) 0;
+}
+
+/* Utility: "barra patria" — the three-stripe celeste / white / celeste accent */
+.dges .bar-patria {
+  height: 6px;
+  background: linear-gradient(to bottom,
+    var(--celeste-claro) 0 33%,
+    #FFFFFF 33% 66%,
+    var(--celeste-claro) 66% 100%);
+}
+
+/* Utility: institutional header block */
+.dges .institutional-bar {
+  background: var(--bordo);
+  color: var(--fg-on-dark);
+}

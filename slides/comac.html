@@ -1,0 +1,611 @@
+<!DOCTYPE html><html lang="es"><head>
+
+
+<meta charset="utf-8">
+<title>ComAc — Comunicación de Actividades · DGES Corrientes</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #000; font-family: var(--font-sans); color: var(--negro); }
+  .slide { background: #fff; overflow: hidden; position: relative; }
+
+  /* ---------- Shared primitives ---------- */
+  .patria { height: 10px; background: linear-gradient(to bottom, #90B4E1 0 33%, #fff 33% 66%, #90B4E1 66% 100%); }
+  .patria-thin { height: 4px; background: linear-gradient(to bottom, #90B4E1 0 33%, #fff 33% 66%, #90B4E1 66% 100%); }
+
+  .overline { font-size: 16px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #6F0603; }
+  .overline.muted { color: rgba(0,0,0,.45); }
+  .overline.on-dark { color: #FACD05; }
+
+  .pad { padding: 80px 110px; }
+
+  .crumb-footer {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 24px 80px; font-size: 16px; color: rgba(0,0,0,.5);
+    border-top: 1px solid rgba(0,0,0,.06);
+  }
+  .crumb-footer .mark { display: flex; align-items: center; gap: 14px; font-weight: 600; color: rgba(0,0,0,.6); }
+  .crumb-footer .mark .dot { width: 10px; height: 10px; background: #6F0603; border-radius: 999px; }
+  .crumb-footer .num { font-family: ui-monospace, Menlo, monospace; font-weight: 600; color: rgba(0,0,0,.4); }
+
+  /* ---------- Slide 1 — Title ---------- */
+  .s-title { background: #FFFDF6; }
+  .s-title .patria { height: 14px; }
+  .s-title .wrap { padding: 120px 120px 140px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 60px; align-items: center; height: calc(100% - 14px); box-sizing: border-box; }
+  .s-title .logo-badge { background: #fff; border-radius: 14px; padding: 28px 34px; display: inline-flex; align-items: center; box-shadow: 0 18px 60px rgba(111,6,3,.14); margin-bottom: 48px; }
+  .s-title .logo-badge img { height: 88px; display: block; }
+  .s-title h1 { font-size: 128px; line-height: 0.95; letter-spacing: -0.03em; font-weight: 900; margin: 0 0 28px; color: #2E2D2C; }
+  .s-title h1 em { font-style: normal; color: #6F0603; }
+  .s-title .sub { font-size: 28px; line-height: 1.35; color: rgba(0,0,0,.62); max-width: 28ch; font-weight: 400; }
+  .s-title .meta { margin-top: 48px; display: flex; gap: 28px; font-size: 18px; color: rgba(0,0,0,.55); font-weight: 500; }
+  .s-title .meta span b { color: #2E2D2C; font-weight: 700; display: block; font-size: 22px; letter-spacing: -0.01em; }
+
+  .s-title .viz { position: relative; height: 720px; display: flex; align-items: center; justify-content: center; }
+  .s-title .viz .shot-wrap { position: relative; width: 100%; max-width: 720px; perspective: 1400px; }
+  .s-title .viz .shot { width: 100%; height: auto; display: block; border-radius: 16px; box-shadow: 0 40px 90px rgba(46,45,44,.28), 0 12px 30px rgba(46,45,44,.18); border: 1px solid rgba(255,255,255,.12); background: #0f1116; }
+  .s-title .viz .glow { position: absolute; inset: -40px; border-radius: 40px; background: radial-gradient(ellipse at center, rgba(250,205,5,.22), transparent 60%); filter: blur(30px); z-index: -1; }
+  @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-18px) rotate(1deg); } }
+  @keyframes shotIn { from { opacity: 0; transform: translateY(60px) scale(.9) rotate(-4deg); } to { opacity: 1; transform: translateY(0) scale(1) rotate(-1deg); } }
+  [data-deck-active] .s-title .viz .shot-wrap { animation: shotIn 900ms cubic-bezier(.2,.8,.2,1) both 300ms, floaty 6s ease-in-out infinite 1200ms; }
+
+  /* ---------- Slide 2 — Qué es ComAc ---------- */
+  .s-what { padding: 0; }
+  .s-what .grid { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
+  .s-what .left { padding: 110px 100px; background: #FFFDF6; display: flex; flex-direction: column; justify-content: center; }
+  .s-what .left h2 { font-size: 92px; font-weight: 900; line-height: 0.98; letter-spacing: -0.03em; margin: 28px 0 32px; color: #2E2D2C; }
+  .s-what .left h2 em { font-style: normal; color: #6F0603; }
+  .s-what .left p { font-size: 26px; line-height: 1.5; color: rgba(0,0,0,.68); max-width: 20ch; font-weight: 400; }
+  .s-what .left .dict { margin-top: 40px; padding-top: 26px; border-top: 1px solid rgba(0,0,0,.12); font-size: 17px; color: rgba(0,0,0,.55); max-width: 32ch; line-height: 1.6; }
+  .s-what .right { background: #2E2D2C; color: #fff; padding: 110px 100px; display: flex; flex-direction: column; justify-content: center; position: relative; }
+  .s-what .right::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: linear-gradient(to bottom, #FACD05 0 33%, #6F0603 33% 66%, #356F23 66%); }
+  .s-what .right .pill { display: inline-flex; align-items: center; gap: 12px; padding: 10px 18px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; font-size: 15px; font-weight: 600; letter-spacing: .04em; margin-bottom: 32px; align-self: flex-start; }
+  .s-what .right .pill .live { width: 10px; height: 10px; border-radius: 999px; background: #FACD05; box-shadow: 0 0 0 4px rgba(250,205,5,.24); }
+  .s-what .right h3 { font-size: 44px; font-weight: 800; line-height: 1.1; letter-spacing: -0.01em; margin: 0 0 28px; }
+  .s-what .right ul { list-style: none; padding: 0; margin: 0; font-size: 22px; line-height: 1.55; color: rgba(255,255,255,.85); }
+  .s-what .right ul li { padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.1); display: flex; gap: 18px; align-items: baseline; }
+  .s-what .right ul li b { color: #FACD05; font-weight: 700; font-family: ui-monospace, Menlo, monospace; font-size: 18px; min-width: 32px; }
+
+  /* ---------- Slide 3 — El Muro Doble ---------- */
+  .s-muro { padding: 0; background: #FAFAF6; }
+  .s-muro .head { padding: 70px 100px 32px; }
+  .s-muro .head h2 { font-size: 72px; font-weight: 900; letter-spacing: -0.02em; margin: 18px 0 12px; line-height: 1; color: #2E2D2C; }
+  .s-muro .head p { font-size: 22px; color: rgba(0,0,0,.6); max-width: 60ch; margin: 0; line-height: 1.4; }
+  .s-muro .two { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; padding: 0 100px; margin-top: 20px; }
+  .s-muro .col { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 14px 40px rgba(46,45,44,.08); border: 1px solid rgba(0,0,0,.04); }
+  .s-muro .col .hdr { padding: 26px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .s-muro .col.done .hdr { background: #356F23; color: #fff; }
+  .s-muro .col.todo .hdr { background: #6F0603; color: #fff; }
+  .s-muro .col .hdr h3 { font-size: 28px; margin: 0; font-weight: 800; letter-spacing: -0.005em; }
+  .s-muro .col .hdr .count { background: rgba(255,255,255,.18); padding: 4px 14px; border-radius: 999px; font-size: 16px; font-weight: 700; font-family: ui-monospace, Menlo, monospace; }
+  .s-muro .col .list { padding: 12px 0; }
+  .s-muro .col .item { padding: 18px 32px; border-bottom: 1px solid rgba(0,0,0,.05); display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; }
+  .s-muro .col .item:last-child { border-bottom: 0; }
+  .s-muro .col .item .dot { width: 12px; height: 12px; border-radius: 999px; }
+  .s-muro .col.done .item .dot { background: #356F23; }
+  .s-muro .col.todo .item .dot { background: #FAAE05; }
+  .s-muro .col .item .t { font-size: 19px; font-weight: 600; color: #2E2D2C; line-height: 1.3; }
+  .s-muro .col .item .t small { display: block; font-size: 14px; color: rgba(0,0,0,.45); font-weight: 400; margin-top: 3px; }
+  .s-muro .col .item .when { font-size: 14px; color: rgba(0,0,0,.5); font-family: ui-monospace, Menlo, monospace; font-weight: 500; }
+
+  /* ---------- Slide 4 — Acceso y modo claro/oscuro ---------- */
+  .s-access { padding: 0; }
+  .s-access .wrap { padding: 80px 100px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; height: 100%; box-sizing: border-box; }
+  .s-access h2 { font-size: 84px; font-weight: 900; letter-spacing: -0.025em; line-height: 1; margin: 18px 0 22px; }
+  .s-access .lead { font-size: 22px; line-height: 1.5; color: rgba(0,0,0,.62); max-width: 28ch; }
+  .s-access .urlbar { margin-top: 32px; display: inline-flex; align-items: center; gap: 16px; padding: 14px 20px; background: #2E2D2C; color: #fff; border-radius: 12px; font-family: ui-monospace, Menlo, monospace; font-size: 18px; box-shadow: 0 14px 40px rgba(0,0,0,.15); }
+  .s-access .urlbar .lock { width: 22px; height: 22px; border: 2px solid #FACD05; border-radius: 4px; position: relative; }
+  .s-access .urlbar .lock::before { content: ''; position: absolute; left: 4px; top: -8px; width: 10px; height: 10px; border: 2px solid #FACD05; border-bottom: 0; border-radius: 999px 999px 0 0; }
+  .s-access .urlbar span b { color: #FACD05; }
+  .s-access .urlbar .arrow { color: rgba(255,255,255,.55); }
+  .s-access .features { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; font-size: 17px; }
+  .s-access .features .f { display: flex; gap: 12px; align-items: center; color: #2E2D2C; font-weight: 500; }
+  .s-access .features .f .c { width: 28px; height: 28px; border-radius: 999px; background: #EAF1DF; color: #356F23; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+
+  .s-access .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .s-access .mode { border-radius: 22px; padding: 26px 26px 28px; box-shadow: 0 24px 60px rgba(46,45,44,.14); position: relative; overflow: hidden; min-height: 460px; }
+  .s-access .mode.light { background: #fff; border: 1px solid rgba(0,0,0,.06); color: #2E2D2C; }
+  .s-access .mode.dark  { background: #15161A; color: #fff; }
+  .s-access .mode .tag { position: absolute; top: 18px; right: 18px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; }
+  .s-access .mode.light .tag { background: #FACD05; color: #2E2D2C; }
+  .s-access .mode.dark .tag { background: rgba(250,205,5,.16); color: #FACD05; border: 1px solid rgba(250,205,5,.35); }
+  .s-access .mode .title { font-weight: 800; font-size: 20px; margin-bottom: 14px; }
+  .s-access .mode .card { padding: 14px 16px; border-radius: 12px; margin-bottom: 10px; font-size: 14px; line-height: 1.4; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .s-access .mode.light .card { background: #F6F4EF; }
+  .s-access .mode.dark .card  { background: rgba(255,255,255,.06); }
+  .s-access .mode .card b { font-weight: 700; display: block; margin-bottom: 2px; }
+  .s-access .mode .card .chip { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; flex-shrink: 0; }
+  .s-access .mode.light .chip.ok { background: #EAF1DF; color: #356F23; }
+  .s-access .mode.light .chip.todo { background: #FFF4D6; color: #72500a; }
+  .s-access .mode.dark .chip.ok { background: rgba(113,156,41,.25); color: #9cdc5a; }
+  .s-access .mode.dark .chip.todo { background: rgba(250,174,5,.2); color: #FACD05; }
+
+  /* ---------- Slide 5 — Aprobación jurisdiccional ---------- */
+  .s-appr { padding: 0; background: #FFFDF6; }
+  .s-appr .wrap { padding: 90px 100px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 70px; align-items: center; height: 100%; box-sizing: border-box; }
+  .s-appr h2 { font-size: 84px; font-weight: 900; letter-spacing: -0.025em; line-height: 1; margin: 16px 0 24px; color: #2E2D2C; }
+  .s-appr h2 em { font-style: normal; color: #6F0603; }
+  .s-appr .lead { font-size: 22px; line-height: 1.55; color: rgba(0,0,0,.65); max-width: 36ch; }
+  .s-appr .flow { margin-top: 44px; display: flex; flex-direction: column; gap: 14px; }
+  .s-appr .step { display: grid; grid-template-columns: 56px 1fr; gap: 18px; align-items: flex-start; }
+  .s-appr .step .n { width: 48px; height: 48px; border-radius: 999px; background: #6F0603; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; }
+  .s-appr .step .n.done { background: #356F23; }
+  .s-appr .step .n.pend { background: #FFF4D6; color: #72500a; border: 2px solid #FAAE05; }
+  .s-appr .step .body b { font-size: 19px; font-weight: 700; display: block; margin-top: 10px; }
+  .s-appr .step .body span { font-size: 15px; color: rgba(0,0,0,.55); }
+
+  .s-appr .stamp { position: relative; align-self: center; justify-self: center; }
+  .s-appr .stamp .doc { background: #fff; border: 1px solid rgba(0,0,0,.08); border-radius: 14px; padding: 44px 52px; box-shadow: 0 30px 80px rgba(46,45,44,.12); width: 420px; }
+  .s-appr .stamp .doc .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: rgba(0,0,0,.5); margin-bottom: 16px; }
+  .s-appr .stamp .doc h3 { font-size: 26px; margin: 0 0 18px; font-weight: 800; line-height: 1.2; }
+  .s-appr .stamp .doc .line { height: 8px; background: #F4F2ED; border-radius: 4px; margin-bottom: 8px; }
+  .s-appr .stamp .doc .line.s { width: 60%; }
+  .s-appr .stamp .seal { position: absolute; right: -36px; bottom: -34px; width: 180px; height: 180px; border-radius: 999px; border: 3px solid #356F23; color: #356F23; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,.92); transform: rotate(-10deg); }
+  .s-appr .stamp .seal b { font-size: 28px; font-weight: 900; letter-spacing: 0.04em; }
+  .s-appr .stamp .seal span { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; margin-top: 4px; }
+  .s-appr .stamp .seal::before, .s-appr .stamp .seal::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 60%; height: 2px; background: #356F23; }
+  .s-appr .stamp .seal::before { top: 28px; }
+  .s-appr .stamp .seal::after  { bottom: 28px; }
+
+  /* ---------- Slide 6 — Referentes + formulario ---------- */
+  .s-ref { padding: 0; background: #fff; }
+  .s-ref .wrap { padding: 80px 100px; display: grid; grid-template-columns: 1fr 1.05fr; gap: 60px; align-items: center; height: 100%; box-sizing: border-box; }
+  .s-ref h2 { font-size: 78px; font-weight: 900; letter-spacing: -0.025em; line-height: 1; margin: 18px 0 24px; color: #2E2D2C; }
+  .s-ref .lead { font-size: 22px; color: rgba(0,0,0,.65); line-height: 1.55; max-width: 34ch; }
+  .s-ref .roles { margin-top: 36px; display: flex; flex-direction: column; gap: 12px; }
+  .s-ref .role { padding: 18px 22px; border: 1px solid rgba(0,0,0,.08); border-radius: 12px; display: flex; gap: 16px; align-items: center; background: #FFFDF6; }
+  .s-ref .role .ring { width: 44px; height: 44px; border-radius: 999px; background: #6F0603; color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .s-ref .role.alt .ring { background: #FACD05; color: #2E2D2C; }
+  .s-ref .role.tre .ring { background: #356F23; }
+  .s-ref .role b { display: block; font-size: 18px; font-weight: 700; }
+  .s-ref .role span { font-size: 14.5px; color: rgba(0,0,0,.55); }
+
+  .s-ref .form { background: #F6F4EF; border-radius: 18px; padding: 36px 40px; border: 1px solid rgba(0,0,0,.06); }
+  .s-ref .form .barlet { display: flex; gap: 8px; margin-bottom: 20px; }
+  .s-ref .form .barlet .s { width: 22px; height: 6px; border-radius: 3px; background: rgba(0,0,0,.12); }
+  .s-ref .form .barlet .s.a { background: #6F0603; }
+  .s-ref .form .overline { color: rgba(0,0,0,.48); font-size: 12px; }
+  .s-ref .form h3 { font-size: 30px; font-weight: 800; margin: 6px 0 22px; letter-spacing: -0.01em; }
+  .s-ref .form .field { margin-bottom: 14px; }
+  .s-ref .form .field label { display: block; font-size: 13px; font-weight: 600; color: rgba(0,0,0,.6); margin-bottom: 6px; letter-spacing: .02em; }
+  .s-ref .form .field .input { background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: 8px; padding: 11px 14px; font-size: 15px; color: #2E2D2C; }
+  .s-ref .form .field .input.placeholder { color: rgba(0,0,0,.38); }
+  .s-ref .form .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .s-ref .form .btn { margin-top: 14px; display: inline-flex; align-items: center; gap: 10px; background: #6F0603; color: #fff; border-radius: 10px; padding: 14px 22px; font-weight: 700; font-size: 15.5px; }
+  .s-ref .form .btn svg { width: 14px; height: 14px; }
+
+  /* ---------- Slide 7 — Soporte ---------- */
+  .s-sup { padding: 0; background: #2E2D2C; color: #fff; }
+  .s-sup .wrap { padding: 100px 110px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; height: 100%; box-sizing: border-box; }
+  .s-sup .overline { color: #FACD05; }
+  .s-sup h2 { font-size: 84px; font-weight: 900; letter-spacing: -0.025em; line-height: 1; margin: 18px 0 24px; }
+  .s-sup .lead { font-size: 22px; line-height: 1.55; color: rgba(255,255,255,.72); max-width: 36ch; }
+  .s-sup .mail { margin-top: 44px; display: inline-flex; flex-direction: column; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); border-radius: 18px; padding: 28px 36px; }
+  .s-sup .mail .from { font-size: 14px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 10px; }
+  .s-sup .mail .addr { font-family: ui-monospace, Menlo, monospace; font-size: 32px; color: #FACD05; font-weight: 700; letter-spacing: -0.01em; }
+  .s-sup .mail .what { margin-top: 14px; font-size: 16px; color: rgba(255,255,255,.65); max-width: 40ch; line-height: 1.5; }
+
+  .s-sup .cards { display: flex; flex-direction: column; gap: 18px; }
+  .s-sup .card { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 24px 28px; display: grid; grid-template-columns: 54px 1fr; gap: 20px; align-items: center; }
+  .s-sup .card .i { width: 54px; height: 54px; background: rgba(250,205,5,.12); color: #FACD05; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; }
+  .s-sup .card b { font-size: 20px; font-weight: 700; display: block; margin-bottom: 4px; }
+  .s-sup .card span { font-size: 15px; color: rgba(255,255,255,.68); line-height: 1.45; }
+
+  /* ---------- Slide 8 — Cronograma ---------- */
+  .s-timeline { padding: 70px 100px; }
+  .s-timeline h2 { font-size: 76px; font-weight: 900; letter-spacing: -0.025em; line-height: 1; margin: 16px 0 12px; color: #2E2D2C; }
+  .s-timeline .lead { font-size: 20px; color: rgba(0,0,0,.55); margin-bottom: 40px; }
+  .s-timeline .rail { position: relative; padding: 40px 0 30px; }
+  .s-timeline .rail::before { content: ''; position: absolute; left: 40px; right: 40px; top: 86px; height: 4px; background: repeating-linear-gradient(to right, rgba(0,0,0,.16) 0 8px, transparent 8px 16px); border-radius: 2px; }
+  .s-timeline .rail::after { content: ''; position: absolute; left: 40px; top: 86px; width: 40%; height: 4px; background: linear-gradient(to right, #FACD05, #6F0603); border-radius: 2px; }
+  .s-timeline .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; position: relative; z-index: 1; }
+  .s-timeline .step { display: flex; flex-direction: column; align-items: flex-start; }
+  .s-timeline .step .badge { background: #2E2D2C; color: #FACD05; font-family: ui-monospace, Menlo, monospace; font-size: 13px; font-weight: 700; letter-spacing: .08em; padding: 6px 12px; border-radius: 6px; margin-bottom: 20px; }
+  .s-timeline .step .circle { width: 90px; height: 90px; border-radius: 999px; background: #fff; border: 4px solid #6F0603; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; color: #6F0603; margin-bottom: 22px; position: relative; box-shadow: 0 12px 30px rgba(111,6,3,.18); }
+  .s-timeline .step.s2 .circle { border-color: #FACD05; color: #2E2D2C; background: #FACD05; }
+  .s-timeline .step.s3 .circle { border-color: #356F23; color: #356F23; }
+  .s-timeline .step .date { font-size: 15px; font-weight: 700; color: rgba(0,0,0,.55); letter-spacing: .02em; margin-bottom: 8px; }
+  .s-timeline .step h3 { font-size: 30px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 14px; line-height: 1.15; color: #2E2D2C; }
+  .s-timeline .step ul { list-style: none; padding: 0; margin: 0; font-size: 15.5px; line-height: 1.55; color: rgba(0,0,0,.62); }
+  .s-timeline .step ul li { padding-left: 18px; position: relative; margin-bottom: 6px; }
+  .s-timeline .step ul li::before { content: ''; position: absolute; left: 0; top: 10px; width: 6px; height: 6px; background: #6F0603; border-radius: 999px; }
+  .s-timeline .step.s2 ul li::before { background: #FAAE05; }
+  .s-timeline .step.s3 ul li::before { background: #356F23; }
+
+  /* ---------- Slide 9 — Primera etapa detallada ---------- */
+  .s-etapa1 { padding: 0; background: #FFFDF6; }
+  .s-etapa1 .head { padding: 80px 100px 20px; }
+  .s-etapa1 .head h2 { font-size: 72px; font-weight: 900; letter-spacing: -0.02em; margin: 10px 0 14px; line-height: 1; color: #2E2D2C; }
+  .s-etapa1 .head h2 em { font-style: normal; color: #6F0603; }
+  .s-etapa1 .head .date-tag { display: inline-flex; align-items: center; gap: 12px; padding: 10px 18px; background: #6F0603; color: #fff; border-radius: 999px; font-size: 16px; font-weight: 700; letter-spacing: .02em; }
+  .s-etapa1 .head .date-tag b { font-family: ui-monospace, Menlo, monospace; color: #FACD05; }
+  .s-etapa1 .grid6 { padding: 20px 100px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .s-etapa1 .box { background: #fff; border-radius: 16px; padding: 28px 28px 24px; border: 1px solid rgba(0,0,0,.06); box-shadow: 0 10px 24px rgba(46,45,44,.06); position: relative; overflow: hidden; }
+  .s-etapa1 .box::before { content: ''; position: absolute; left: 0; top: 0; height: 4px; width: 100%; }
+  .s-etapa1 .box.a::before { background: #6F0603; }
+  .s-etapa1 .box.b::before { background: #FACD05; }
+  .s-etapa1 .box.c::before { background: #356F23; }
+  .s-etapa1 .box.d::before { background: #1F5D9B; }
+  .s-etapa1 .box.e::before { background: #F4492E; }
+  .s-etapa1 .box.f::before { background: #769FD3; }
+  .s-etapa1 .box .n { font-family: ui-monospace, Menlo, monospace; font-size: 13px; font-weight: 700; color: rgba(0,0,0,.4); margin-bottom: 14px; }
+  .s-etapa1 .box h3 { font-size: 22px; font-weight: 800; margin: 0 0 10px; line-height: 1.2; letter-spacing: -0.005em; }
+  .s-etapa1 .box p { font-size: 15px; color: rgba(0,0,0,.6); line-height: 1.5; margin: 0; }
+
+  /* ---------- Slide 10 — Cierre ---------- */
+  .s-close { background: #6F0603; color: #fff; padding: 0; position: relative; overflow: hidden; }
+  .s-close::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 82% 18%, rgba(250,205,5,.28), transparent 45%), radial-gradient(circle at 10% 90%, rgba(144,180,225,.22), transparent 40%); }
+  .s-close .wrap { padding: 110px 120px; height: 100%; box-sizing: border-box; display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px; align-items: center; position: relative; }
+  .s-close .top { max-width: 18ch; }
+  .s-close .shot-10 { position: relative; perspective: 1400px; }
+  .s-close .shot-10 img { width: 100%; max-width: 640px; display: block; border-radius: 14px; box-shadow: 0 40px 100px rgba(0,0,0,.45), 0 12px 30px rgba(0,0,0,.2); border: 1px solid rgba(255,255,255,.12); }
+  .s-close .shot-10 .glow { position: absolute; inset: -50px; border-radius: 50px; background: radial-gradient(ellipse at center, rgba(250,205,5,.22), transparent 60%); filter: blur(30px); z-index: -1; }
+  [data-deck-active] .s-close .shot-10 { animation: shotIn 900ms cubic-bezier(.2,.8,.2,1) both 300ms, floaty 6s ease-in-out infinite 1200ms; }
+  .s-close .footer-row { position: absolute; left: 120px; right: 120px; bottom: 60px; display: flex; gap: 60px; align-items: center; }
+  .s-close .overline { color: #FACD05; }
+  .s-close h2 { font-size: 104px; line-height: 0.94; letter-spacing: -0.03em; font-weight: 900; margin: 24px 0 32px; max-width: 14ch; }
+  .s-close h2 em { font-style: normal; color: #FACD05; }
+  .s-close .lead { font-size: 26px; line-height: 1.45; color: rgba(255,255,255,.82); max-width: 40ch; }
+  .s-close .footer-row .logo-box { background: rgba(255,255,255,.94); padding: 14px 20px; border-radius: 10px; display: inline-block; }
+  .s-close .footer-row .logo-box img { height: 48px; display: block; }
+  .s-close .footer-row .info b { display: block; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: #FACD05; margin-bottom: 6px; font-weight: 700; }
+  .s-close .footer-row .info span { font-size: 15px; line-height: 1.5; color: rgba(255,255,255,.86); font-family: ui-monospace, Menlo, monospace; }
+  .s-close .footer-row .info.nrm span { font-family: var(--font-sans); }
+
+  /* ---------- Motion ---------- */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideRight { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes slideLeft { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes scaleIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+  @keyframes drawBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @keyframes pulseRing { 0%{ box-shadow: 0 0 0 0 rgba(250,205,5,.55); } 70%{ box-shadow: 0 0 0 22px rgba(250,205,5,0); } 100%{ box-shadow: 0 0 0 0 rgba(250,205,5,0); } }
+  @keyframes rotateIn { from { opacity: 0; transform: rotate(-16deg) scale(.9); } to { opacity: 1; transform: var(--final-rot, rotate(0)) scale(1); } }
+
+  [data-deck-active] .anim         { animation: fadeUp 700ms cubic-bezier(.2,.8,.2,1) both; }
+  [data-deck-active] .anim.d1      { animation-delay: 80ms; }
+  [data-deck-active] .anim.d2      { animation-delay: 180ms; }
+  [data-deck-active] .anim.d3      { animation-delay: 280ms; }
+  [data-deck-active] .anim.d4      { animation-delay: 380ms; }
+  [data-deck-active] .anim.d5      { animation-delay: 480ms; }
+  [data-deck-active] .anim.d6      { animation-delay: 580ms; }
+  [data-deck-active] .anim-fade    { animation: fadeIn 900ms ease both; }
+  [data-deck-active] .anim-right   { animation: slideRight 700ms cubic-bezier(.2,.8,.2,1) both; }
+  [data-deck-active] .anim-left    { animation: slideLeft  700ms cubic-bezier(.2,.8,.2,1) both; }
+  [data-deck-active] .anim-scale   { animation: scaleIn    700ms cubic-bezier(.2,.8,.2,1) both; }
+  [data-deck-active] .anim-bar     { animation: drawBar 900ms cubic-bezier(.2,.8,.2,1) both; transform-origin: left center; }
+  [data-deck-active] .anim-rotate  { animation: rotateIn 900ms cubic-bezier(.2,.8,.2,1) both; }
+  [data-deck-active] .pulse        { animation: pulseRing 2.4s ease-out infinite; }
+
+  [data-deck-active] .stagger > *  { animation: fadeUp 640ms cubic-bezier(.2,.8,.2,1) both; }
+  [data-deck-active] .stagger > *:nth-child(1) { animation-delay: 100ms; }
+  [data-deck-active] .stagger > *:nth-child(2) { animation-delay: 180ms; }
+  [data-deck-active] .stagger > *:nth-child(3) { animation-delay: 260ms; }
+  [data-deck-active] .stagger > *:nth-child(4) { animation-delay: 340ms; }
+  [data-deck-active] .stagger > *:nth-child(5) { animation-delay: 420ms; }
+  [data-deck-active] .stagger > *:nth-child(6) { animation-delay: 500ms; }
+  [data-deck-active] .stagger > *:nth-child(7) { animation-delay: 580ms; }
+  [data-deck-active] .stagger > *:nth-child(8) { animation-delay: 660ms; }
+
+  .s-title .viz .p1 { --final-rot: rotate(-3deg); }
+  .s-title .viz .p2 { --final-rot: rotate(2deg); }
+  .s-title .viz .p3 { --final-rot: rotate(4deg); }
+</style>
+<style id="deck-stage-print-page">@page { size: 1920px 1080px; margin: 0; } @media print { html, body { margin: 0 !important; padding: 0 !important; background: none !important; overflow: visible !important; height: auto !important; } * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }</style></head>
+<body data-cc-id="cc-1" style="cursor: crosshair; background-color: rgb(255, 255, 255);">
+
+<script type="application/json" id="speaker-notes">[
+  "Bienvenidos. Presentamos ComAc, el sistema de Comunicación de Actividades de la Dirección General de Nivel Superior de Corrientes.",
+  "ComAc es una herramienta institucional simple: un muro doble donde cada instituto registra lo que hizo y lo que va a hacer, y la Dirección lo ve en tiempo real.",
+  "El corazón del sistema es el Muro Doble: una columna para actividades realizadas y otra para actividades a realizarse. Una mirada, todo el ciclo.",
+  "El acceso es público desde dgescorrientes.net. Modo claro y oscuro desde el primer día, pensando en accesibilidad y comodidad.",
+  "Antes del lanzamiento, ComAc cuenta con aprobación jurisdiccional formal del Ministerio de Educación de Corrientes.",
+  "Cada instituto define sus Referentes Institucionales a través de un formulario online. Es el paso que habilita la carga.",
+  "La gestión de usuarios y el soporte se canalizan por un único correo: equipotecnico@dgescorrientes.net",
+  "Tres etapas claras: presentación, definición de usuarios y apertura completa al Nivel Superior.",
+  "Presentación el 20 de abril: acceso, muro doble, modos, aprobación, formulario de referentes y primeras cargas.",
+  "Gracias. El equipo técnico acompaña cada paso. Nos vemos en el muro."
+]</script>
+
+<deck-stage width="1920" height="1080">
+
+  <!-- ========== SLIDE 1 — TITLE ========== -->
+  <section class="slide s-title" data-label="Title" data-screen-label="01 Title" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="0" data-deck-active="">
+    <div class="patria"></div>
+    <div class="wrap">
+      <div>
+        <div class="logo-badge anim-scale"><img src="../assets/logo-superior-2026.jpg" alt="DGES Corrientes"></div>
+        <div class="overline anim d1">Sistema de Comunicación de Actividades</div>
+        <h1 class="anim d2">Com<em>Ac</em>.</h1>
+        <div class="sub anim d3">Una herramienta común para todo el Nivel Superior de Corrientes.</div>
+        <div class="meta anim d4">
+          <span><b>Abril 2026</b>Lanzamiento oficial</span>
+          <span><b>dgescorrientes.net</b>Acceso público</span>
+        </div>
+      </div>
+      <div class="viz">
+        <div class="shot-wrap">
+          <div class="glow"></div>
+          <img class="shot" src="../assets/comac-muro-screenshot.png" alt="Captura del Muro de ComAc">
+        </div>
+      </div>
+    </div>
+    <div class="crumb-footer"><div class="mark"><span class="dot"></span>DGES Corrientes · ComAc 2026</div><div class="num">01 / 10</div></div>
+  </section>
+
+  <!-- ========== SLIDE 2 — Qué es ComAc ========== -->
+  <section class="slide s-what" data-label="Que es" data-screen-label="02 Que es" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="1">
+    <div class="grid">
+      <div class="left">
+        <div class="overline anim">01 · Qué es</div>
+        <h2 class="anim d1">Un lugar único para las <em>comunicaciones institucionales</em>.</h2>
+        <p class="anim d2">ComAc centraliza las actividades de cada instituto y de la Dirección, en una sola vista.</p>
+        <div class="dict anim d3">
+          <b style="color:#6F0603">ComAc</b> · sustantivo · del acrónimo <b>Com</b>unicación de <b>Ac</b>tividades. Plataforma web desarrollada por el equipo técnico de la DGES para unificar el flujo de comunicaciones de todo el Nivel Superior.
+        </div>
+      </div>
+      <div class="right">
+        <div class="pill anim"><span class="live pulse"></span>En producción desde abril 2026</div>
+        <h3 class="anim d1">Una sola fuente para lo que pasa en el Nivel Superior.</h3>
+        <ul class="stagger">
+          <li><b>01</b>Reemplaza correos dispersos y planillas paralelas.</li>
+          <li><b>02</b>Muestra en tiempo real qué hizo y qué viene cada instituto.</li>
+          <li><b>03</b>Registra la memoria institucional de la provincia.</li>
+          <li><b>04</b>Acceso público desde dgescorrientes.net.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="crumb-footer"><div class="mark"><span class="dot"></span>ComAc · Qué es</div><div class="num">02 / 10</div></div>
+  </section>
+
+  <!-- ========== SLIDE 3 — Muro doble ========== -->
+  <section class="slide s-muro" data-label="Muro doble" data-screen-label="03 Muro doble" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="2">
+    <div class="head">
+      <div class="overline anim">02 · El Muro Doble</div>
+      <h2 class="anim d1">Realizadas. <span style="color:rgba(0,0,0,.25)">y</span> A realizarse.</h2>
+      <p class="anim d2">Dos columnas, lectura inmediata. Cada instituto publica; la Dirección y la comunidad leen.</p>
+    </div>
+    <div class="two">
+      <div class="col done anim-right">
+        <div class="hdr"><h3>Actividades realizadas</h3><span class="count">· 42</span></div>
+        <div class="list stagger">
+          <div class="item"><span class="dot"></span><div class="t">Mesa de examen diciembre<small>ISFD José Manuel Estrada · Capital</small></div><span class="when">12 dic 2025</span></div>
+          <div class="item"><span class="dot"></span><div class="t">Taller de alfabetización inicial<small>INFoD · modalidad virtual</small></div><span class="when">04 feb 2026</span></div>
+          <div class="item"><span class="dot"></span><div class="t">Jornada institucional de inicio<small>ISFD Carmen Molina · Goya</small></div><span class="when">01 mar 2026</span></div>
+          <div class="item"><span class="dot"></span><div class="t">Capacitación docente ESI<small>28 institutos</small></div><span class="when">18 mar 2026</span></div>
+        </div>
+      </div>
+      <div class="col todo anim-left">
+        <div class="hdr"><h3>Actividades a realizarse</h3><span class="count">· 18</span></div>
+        <div class="list stagger">
+          <div class="item"><span class="dot"></span><div class="t">Preinscripción ciclo 2026<small>Todos los institutos</small></div><span class="when">22 abr 2026</span></div>
+          <div class="item"><span class="dot"></span><div class="t">Encuentro federal de FD<small>Invitación INFoD · Capital Humano</small></div><span class="when">05 may 2026</span></div>
+          <div class="item"><span class="dot"></span><div class="t">Concurso docente titular<small>Comisión jurisdiccional</small></div><span class="when">18 may 2026</span></div>
+          <div class="item"><span class="dot"></span><div class="t">Feria Provincial del Libro<small>ISFD · Capital</small></div><span class="when">14 jul 2026</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="crumb-footer"><div class="mark"><span class="dot"></span>ComAc · Muro Doble</div><div class="num">03 / 10</div></div>
+  </section>
+
+  <!-- ========== SLIDE 4 — Acceso + modos ========== -->
+  <section class="slide s-access" data-label="Acceso y modos" data-screen-label="04 Acceso y modos" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="3">
+    <div class="wrap">
+      <div>
+        <div class="overline anim">03 · Acceso</div>
+        <h2 class="anim d1">Desde <span style="color:#6F0603">dgescorrientes.net</span>.</h2>
+        <p class="lead anim d2">Un clic desde el sitio institucional. Sin instalación, sin aplicación extra.</p>
+        <div class="urlbar anim d3">
+          <span class="lock"></span>
+          <span><b>dgescorrientes.net</b> / comac</span>
+          <span class="arrow">→</span>
+        </div>
+        <div class="features stagger">
+          <div class="f"><span class="c">✓</span>Modo claro y oscuro</div>
+          <div class="f"><span class="c">✓</span>Responsive en celular</div>
+          <div class="f"><span class="c">✓</span>Sin registro para leer</div>
+          <div class="f"><span class="c">✓</span>Accesible WCAG AA</div>
+        </div>
+      </div>
+      <div class="modes">
+        <div class="mode light anim-scale">
+          <span class="tag">Claro</span>
+          <div class="title">Muro · vista del día</div>
+          <div class="card"><div><b>Preinscripción 2026</b>ISFD Capital</div><span class="chip todo">Próximo</span></div>
+          <div class="card"><div><b>Mesa de examen</b>Goya · turno noche</div><span class="chip ok">Listo</span></div>
+          <div class="card"><div><b>Jornada ESI</b>28 institutos</div><span class="chip ok">Listo</span></div>
+          <div class="card"><div><b>Feria del Libro</b>Capital</div><span class="chip todo">Próximo</span></div>
+        </div>
+        <div class="mode dark anim-scale" style="animation-delay: 140ms">
+          <span class="tag">Oscuro</span>
+          <div class="title">Muro · vista del día</div>
+          <div class="card"><div><b>Preinscripción 2026</b>ISFD Capital</div><span class="chip todo">Próximo</span></div>
+          <div class="card"><div><b>Mesa de examen</b>Goya · turno noche</div><span class="chip ok">Listo</span></div>
+          <div class="card"><div><b>Jornada ESI</b>28 institutos</div><span class="chip ok">Listo</span></div>
+          <div class="card"><div><b>Feria del Libro</b>Capital</div><span class="chip todo">Próximo</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="crumb-footer"><div class="mark"><span class="dot"></span>ComAc · Acceso y modos</div><div class="num">04 / 10</div></div>
+  </section>
+
+  <!-- ========== SLIDE 5 — Aprobación jurisdiccional ========== -->
+  <section class="slide s-appr" data-label="Aprobacion" data-screen-label="05 Aprobacion" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="4">
+    <div class="wrap">
+      <div>
+        <div class="overline anim">04 · Respaldo</div>
+        <h2 class="anim d1">Aprobación <em>jurisdiccional</em> del Ministerio.</h2>
+        <p class="lead anim d2">ComAc no es un piloto suelto. El Ministerio de Educación de Corrientes avala formalmente su uso como canal oficial del Nivel Superior.</p>
+        <div class="flow stagger">
+          <div class="step"><div class="n done">✓</div><div class="body"><b>Propuesta técnica elevada</b><span>Equipo técnico DGES → Dirección General</span></div></div>
+          <div class="step"><div class="n done">✓</div><div class="body"><b>Validación por la Dirección</b><span>Ajustes de alcance y cronograma</span></div></div>
+          <div class="step"><div class="n done">✓</div><div class="body"><b>Aprobación ministerial</b><span>Ministerio de Educación de Corrientes</span></div></div>
+          <div class="step"><div class="n pend">4</div><div class="body"><b>Publicación oficial</b><span>20 de abril de 2026</span></div></div>
+        </div>
+      </div>
+      <div class="stamp anim-scale">
+        <div class="doc">
+          <div class="eyebrow">Resolución interna · DGES</div>
+          <h3>Implementación del sistema ComAc en el Nivel Superior de Corrientes</h3>
+          <div class="line"></div><div class="line"></div><div class="line s"></div>
+          <div class="line" style="margin-top:16px"></div><div class="line"></div><div class="line s"></div>
+        </div>
+        <div class="seal"><b>APROBADO</b><span>abril 2026</span></div>
+      </div>
+    </div>
+    <div class="crumb-footer"><div class="mark"><span class="dot"></span>ComAc · Aprobación</div><div class="num">05 / 10</div></div>
+  </section>
+
+  <!-- ========== SLIDE 6 — Referentes + Formulario ========== -->
+  <section class="slide s-ref" data-label="Referentes" data-screen-label="06 Referentes" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="5">
+    <div class="wrap">
+      <div>
+        <div class="overline anim">05 · Referentes institucionales</div>
+        <h2 class="anim d1">Quién <span style="color:#6F0603">carga</span>, quién <span style="color:#6F0603">valida</span>.</h2>
+        <p class="lead anim d2">Cada instituto designa a sus referentes con un formulario online. Así habilita su acceso de carga en ComAc.</p>
+        <div class="roles stagger">
+          <div class="role"><div class="ring">01</div><div><b>Referente principal</b><span>Dirección o vicedirección del instituto. Responsable de la publicación.</span></div></div>
+          <div class="role alt"><div class="ring">02</div><div><b>Referente de carga</b><span>Docente o personal designado. Carga el día a día.</span></div></div>
+          <div class="role tre"><div class="ring">03</div><div><b>Referente técnico</b><span>Contacto con el equipo técnico DGES para soporte.</span></div></div>
+        </div>
+      </div>
+      <div class="form anim-right">
+        <div class="barlet"><span class="s a"></span><span class="s a"></span><span class="s"></span><span class="s"></span></div>
+        <div class="overline">Formulario online</div>
+        <h3>Designación de referentes institucionales</h3>
+        <div class="field"><label>Instituto</label><div class="input">ISFD "José Manuel Estrada" · Capital</div></div>
+        <div class="row2">
+          <div class="field"><label>Apellido y nombre · referente principal</label><div class="input placeholder">María Fernández</div></div>
+          <div class="field"><label>DNI</label><div class="input placeholder">32.145.987</div></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Correo institucional</label><div class="input placeholder">nombre@dgescorrientes.net</div></div>
+          <div class="field"><label>Cargo</label><div class="input placeholder">Directora</div></div>
+        </div>
+        <div class="btn">Enviar designación <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3l5 5-5 5"></path></svg></div>
+      </div>
+    </div>
+    <div class="crumb-footer"><div class="mark"><span class="dot"></span>ComAc · Referentes</div><div class="num">06 / 10</div></div>
+  </section>
+
+  <!-- ========== SLIDE 7 — Soporte ========== -->
+  <section class="slide s-sup" data-label="Soporte" data-screen-label="07 Soporte" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="6">
+    <div class="wrap">
+      <div>
+        <div class="overline anim">06 · Gestión y soporte</div>
+        <h2 class="anim d1">Un único <span style="color:#FACD05">canal</span>.</h2>
+        <p class="lead anim d2">Gestión de usuarios, altas, bajas, contraseñas y soporte técnico se canalizan por correo al equipo técnico de la DGES.</p>
+        <div class="mail anim-scale">
+          <div class="from">Escribinos a</div>
+          <div class="addr">equipotecnico@dgescorrientes.net</div>
+          <div class="what">Incluí nombre del instituto, nombre del referente y el detalle de la solicitud. Respuestas en horario administrativo.</div>
+        </div>
+      </div>
+      <div class="cards stagger">
+        <div class="card"><div class="i">↻</div><div><b>Altas y bajas de usuarios</b><span>Cambio de referentes, nuevos institutos, extensiones áulicas.</span></div></div>
+        <div class="card"><div class="i">⚙</div><div><b>Soporte técnico</b><span>Errores de carga, problemas de acceso, dudas de operatoria.</span></div></div>
+        <div class="card"><div class="i">★</div><div><b>Mejoras y sugerencias</b><span>Pedidos de nuevas funciones, reportes desde los institutos.</span></div></div>
+      </div>
+    </div>
+    <div class="crumb-footer" style="color: rgba(255,255,255,.5); border-top-color: rgba(255,255,255,.1);"><div class="mark" style="color: rgba(255,255,255,.7)"><span class="dot" style="background:#FACD05"></span>ComAc · Soporte</div><div class="num" style="color: rgba(255,255,255,.4)">07 / 10</div></div>
+  </section>
+
+  <!-- ========== SLIDE 8 — Cronograma ========== -->
+  <section class="slide s-timeline" data-label="Cronograma" data-screen-label="08 Cronograma" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="7">
+    <div class="overline anim">07 · Cronograma de implementación</div>
+    <h2 class="anim d1">Tres etapas. Abril 2026.</h2>
+    <p class="lead anim d2">Del lanzamiento público a la carga completa de la comunidad de Nivel Superior.</p>
+    <div class="rail">
+      <div class="steps">
+        <div class="step s1 anim d3">
+          <span class="badge">ETAPA · 01</span>
+          <div class="circle pulse">1</div>
+          <div class="date">20 de abril de 2026</div>
+          <h3>Presentación<br>y lanzamiento</h3>
+          <ul>
+            <li>Acceso desde dgescorrientes.net</li>
+            <li>Muro doble · modo claro/oscuro</li>
+            <li>Aprobación jurisdiccional</li>
+            <li>Formulario de referentes</li>
+            <li>Primeras cargas institucionales</li>
+          </ul>
+        </div>
+        <div class="step s2 anim d4">
+          <span class="badge" style="background:#FACD05;color:#2E2D2C">ETAPA · 02</span>
+          <div class="circle">2</div>
+          <div class="date">21 al 24 de abril de 2026</div>
+          <h3>Usuarios<br>y limpieza</h3>
+          <ul>
+            <li>Definición y carga de usuarios reales</li>
+            <li>Eliminación de datos de prueba</li>
+            <li>Validación de referentes por instituto</li>
+            <li>Configuración de permisos</li>
+          </ul>
+        </div>
+        <div class="step s3 anim d5">
+          <span class="badge" style="background:#356F23;color:#fff">ETAPA · 03</span>
+          <div class="circle">3</div>
+          <div class="date">A partir del 25 de abril</div>
+          <h3>Apertura<br>a la comunidad</h3>
+          <ul>
+            <li>Carga abierta a todos los institutos</li>
+            <li>Comunicaciones de la Dirección</li>
+            <li>Muro doble activo en producción</li>
+            <li>Acompañamiento permanente</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="crumb-footer"><div class="mark"><span class="dot"></span>ComAc · Cronograma</div><div class="num">08 / 10</div></div>
+  </section>
+
+  <!-- ========== SLIDE 9 — Etapa 1 detalle ========== -->
+  <section class="slide s-etapa1" data-label="Etapa 1" data-screen-label="09 Etapa 1" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="8">
+    <div class="head">
+      <div class="overline anim">Zoom · Etapa 01</div>
+      <h2 class="anim d1">Todo lo que <em>abre</em> el lanzamiento.</h2>
+      <div class="date-tag anim d2">Lunes <b>20 · abril · 2026</b></div>
+    </div>
+    <div class="grid6 stagger">
+      <div class="box a"><div class="n">01</div><h3>Acceso público</h3><p>ComAc se publica con enlace directo desde dgescorrientes.net. Sin registro para lectura.</p></div>
+      <div class="box b"><div class="n">02</div><h3>Muro doble</h3><p>Realizadas y a realizarse, uno al lado del otro. La vista principal del sistema.</p></div>
+      <div class="box c"><div class="n">03</div><h3>Modo claro y oscuro</h3><p>Accesibilidad desde el primer día. Detección automática del sistema del usuario.</p></div>
+      <div class="box d"><div class="n">04</div><h3>Aprobación jurisdiccional</h3><p>Respaldado por resolución interna del Ministerio de Educación de Corrientes.</p></div>
+      <div class="box e"><div class="n">05</div><h3>Formulario de referentes</h3><p>Cada instituto designa referentes online. Es el paso que habilita la carga.</p></div>
+      <div class="box f"><div class="n">06</div><h3>Primeras actividades</h3><p>Carga inicial con los eventos institucionales del ciclo lectivo 2026.</p></div>
+    </div>
+    <div class="crumb-footer"><div class="mark"><span class="dot"></span>ComAc · Etapa 1</div><div class="num">09 / 10</div></div>
+  </section>
+
+  <!-- ========== SLIDE 10 — Cierre ========== -->
+  <section class="slide s-close" data-label="Cierre" data-screen-label="10 Cierre" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="9">
+    <div class="wrap">
+      <div class="top">
+        <div class="overline anim">Gracias</div>
+        <h2 class="anim d1">Nos vemos<br>en el <em>muro</em>.</h2>
+        <div class="lead anim d2">ComAc es de todos: Dirección, institutos y comunidad de Nivel Superior. Cada publicación construye la memoria pública de la provincia.</div>
+      </div>
+      <div class="shot-10">
+        <div class="glow"></div>
+        <img src="../assets/comac-muro-screenshot.png" alt="Captura del Muro de ComAc">
+      </div>
+    </div>
+    <div class="footer-row anim d3">
+      <div class="logo-box"><img src="../assets/logo-superior-2026.jpg" alt="DGES Corrientes"></div>
+      <div class="info">
+        <b>Soporte</b>
+        <span>equipotecnico@dgescorrientes.net</span>
+      </div>
+      <div class="info nrm">
+        <b>Acceso</b>
+        <span>dgescorrientes.net · C. Pellegrini 1575 · Corrientes</span>
+      </div>
+    </div>
+    <div class="patria-thin" style="position:absolute;top:0;left:0;right:0;"></div>
+  </section>
+
+</deck-stage>
+
+<script src="deck-stage.js"></script>
+
+
+</body></html>

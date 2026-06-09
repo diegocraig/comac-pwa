@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ComAc — Comunicación de Actividades | DGES Corrientes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;900&family=Montserrat:ital,wght@0,300;0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset & base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --c1: #0a0a1a;
+    --c2: #6c3bff;
+    --c3: #ff3b8e;
+    --c4: #00e5ff;
+    --c5: #ffe600;
+    --c6: #ff6a1a;
+    --white: #ffffff;
+    --glass: rgba(255,255,255,0.07);
+    --glass-border: rgba(255,255,255,0.15);
+    --font-display: 'Bebas Neue', 'Montserrat', sans-serif;
+    --font-body: 'Inter', 'Montserrat', sans-serif;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--c1);
+    color: var(--white);
+    font-family: var(--font-body);
+  }
+
+  /* ── Slideshow container ── */
+  #deck {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── Individual slides ── */
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6vw 8vw;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1.04) translateY(30px);
+    transition: opacity 0.7s cubic-bezier(.4,0,.2,1),
+                transform 0.7s cubic-bezier(.4,0,.2,1);
+    will-change: opacity, transform;
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: scale(1) translateY(0);
+  }
+  .slide.exit {
+    opacity: 0;
+    transform: scale(0.96) translateY(-30px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  /* ── Animated mesh background ── */
+  .slide-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .slide-bg::before,
+  .slide-bg::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.55;
+    animation: float1 8s ease-in-out infinite alternate;
+  }
+
+  /* per-slide color themes */
+  .s0 .slide-bg::before { width:60vw; height:60vw; top:-10%; left:-15%; background: radial-gradient(circle, #6c3bff 0%, #0a0a1a 70%); }
+  .s0 .slide-bg::after  { width:40vw; height:40vw; bottom:-5%; right:-5%; background: radial-gradient(circle, #ff3b8e 0%, transparent 70%); animation-name: float2; }
+
+  .s1 .slide-bg::before { width:55vw; height:55vw; top:-15%; right:-10%; background: radial-gradient(circle, #ff3b8e 0%, transparent 70%); }
+  .s1 .slide-bg::after  { width:45vw; height:45vw; bottom:-10%; left:-5%; background: radial-gradient(circle, #ffe600 0%, transparent 70%); animation-name: float2; }
+
+  .s2 .slide-bg::before { width:65vw; height:65vw; top:-20%; left:-20%; background: radial-gradient(circle, #00e5ff 0%, transparent 70%); }
+  .s2 .slide-bg::after  { width:40vw; height:40vw; bottom:0; right:-5%; background: radial-gradient(circle, #6c3bff 0%, transparent 70%); animation-name: float2; }
+
+  .s3 .slide-bg::before { width:60vw; height:60vw; top:-10%; right:-10%; background: radial-gradient(circle, #ff6a1a 0%, transparent 70%); }
+  .s3 .slide-bg::after  { width:50vw; height:50vw; bottom:-10%; left:-10%; background: radial-gradient(circle, #6c3bff 0%, transparent 70%); animation-name: float2; }
+
+  .s4 .slide-bg::before { width:55vw; height:55vw; top:-15%; left:-10%; background: radial-gradient(circle, #ffe600 0%, transparent 70%); }
+  .s4 .slide-bg::after  { width:45vw; height:45vw; bottom:0; right:-10%; background: radial-gradient(circle, #ff3b8e 0%, transparent 70%); animation-name: float2; }
+
+  .s5 .slide-bg::before { width:70vw; height:70vw; top:-25%; right:-20%; background: radial-gradient(circle, #6c3bff 0%, transparent 70%); }
+  .s5 .slide-bg::after  { width:50vw; height:50vw; bottom:-10%; left:-10%; background: radial-gradient(circle, #00e5ff 0%, transparent 70%); animation-name: float2; }
+
+  .s6 .slide-bg::before { width:60vw; height:60vw; top:-10%; left:-15%; background: radial-gradient(circle, #ff3b8e 0%, transparent 70%); }
+  .s6 .slide-bg::after  { width:50vw; height:50vw; bottom:-10%; right:-10%; background: radial-gradient(circle, #ffe600 0%, transparent 70%); animation-name: float2; }
+
+  .s7 .slide-bg::before { width:55vw; height:55vw; top:-10%; right:-10%; background: radial-gradient(circle, #00e5ff 0%, transparent 70%); }
+  .s7 .slide-bg::after  { width:45vw; height:45vw; bottom:0; left:-10%; background: radial-gradient(circle, #ff6a1a 0%, transparent 70%); animation-name: float2; }
+
+  .s8 .slide-bg::before { width:60vw; height:60vw; top:-15%; left:-10%; background: radial-gradient(circle, #6c3bff 0%, transparent 70%); }
+  .s8 .slide-bg::after  { width:50vw; height:50vw; bottom:-10%; right:-5%; background: radial-gradient(circle, #ff3b8e 0%, transparent 70%); animation-name: float2; }
+
+  .s9 .slide-bg::before { width:65vw; height:65vw; top:-20%; right:-15%; background: radial-gradient(circle, #ff6a1a 0%, transparent 70%); }
+  .s9 .slide-bg::after  { width:45vw; height:45vw; bottom:0; left:-10%; background: radial-gradient(circle, #ffe600 0%, transparent 70%); animation-name: float2; }
+
+  .s10 .slide-bg::before { width:60vw; height:60vw; top:-10%; left:-15%; background: radial-gradient(circle, #00e5ff 0%, transparent 70%); }
+  .s10 .slide-bg::after  { width:50vw; height:50vw; bottom:-10%; right:-10%; background: radial-gradient(circle, #6c3bff 0%, transparent 70%); animation-name: float2; }
+
+  @keyframes float1 { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(3%,4%) scale(1.08)} }
+  @keyframes float2 { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(-3%,-3%) scale(1.06)} }
+
+  /* ── Noise grain overlay ── */
+  #deck::after {
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── Slide content layer ── */
+  .slide-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.4vh;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  /* ── Typography ── */
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: clamp(0.65rem, 1.1vw, 0.9rem);
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    color: var(--c4);
+    animation: fadeUp 0.8s 0.2s both;
+  }
+  .display-title {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    background: linear-gradient(135deg, var(--white) 30%, var(--c4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeUp 0.8s 0.3s both;
+  }
+  .big-year {
+    font-family: var(--font-display);
+    font-size: clamp(6rem, 18vw, 15rem);
+    line-height: 0.85;
+    letter-spacing: 0.01em;
+    background: linear-gradient(135deg, var(--c5) 0%, var(--c3) 50%, var(--c2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: zoomIn 0.9s 0.2s both;
+    filter: drop-shadow(0 0 60px rgba(255,230,0,0.3));
+  }
+  .headline {
+    font-family: var(--font-body);
+    font-size: clamp(1.5rem, 3.8vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    animation: fadeUp 0.8s 0.35s both;
+  }
+  .sub {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 2vw, 1.35rem);
+    font-weight: 400;
+    line-height: 1.6;
+    opacity: 0.88;
+    max-width: 720px;
+    animation: fadeUp 0.8s 0.5s both;
+  }
+  .sub strong, .sub b {
+    font-weight: 700;
+    color: var(--c4);
+  }
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    justify-content: center;
+    animation: fadeUp 0.8s 0.55s both;
+  }
+  .pill {
+    padding: 0.45em 1.1em;
+    border-radius: 999px;
+    font-size: clamp(0.75rem, 1.3vw, 1rem);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    border: 2px solid;
+  }
+  .pill-purple { background: rgba(108,59,255,0.25); border-color: var(--c2); color: #c9b8ff; }
+  .pill-pink   { background: rgba(255,59,142,0.2); border-color: var(--c3); color: #ffb3d4; }
+  .pill-cyan   { background: rgba(0,229,255,0.15); border-color: var(--c4); color: #a0f5ff; }
+  .pill-yellow { background: rgba(255,230,0,0.15); border-color: var(--c5); color: #fff09e; }
+  .pill-orange { background: rgba(255,106,26,0.2); border-color: var(--c6); color: #ffcda0; }
+
+  /* ── Glass card ── */
+  .glass-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2.5rem 3rem;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    animation: fadeUp 0.8s 0.4s both;
+    max-width: 820px;
+    width: 100%;
+  }
+
+  /* ── List styles ── */
+  .feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    text-align: left;
+    width: 100%;
+  }
+  .feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: clamp(0.85rem, 1.6vw, 1.1rem);
+    font-weight: 500;
+    line-height: 1.45;
+    animation: slideInLeft 0.6s both;
+  }
+  .feature-list li:nth-child(1) { animation-delay: 0.3s; }
+  .feature-list li:nth-child(2) { animation-delay: 0.45s; }
+  .feature-list li:nth-child(3) { animation-delay: 0.6s; }
+  .feature-list li:nth-child(4) { animation-delay: 0.75s; }
+  .feature-list li:nth-child(5) { animation-delay: 0.9s; }
+  .feature-list li:nth-child(6) { animation-delay: 1.05s; }
+  .feature-list li:nth-child(7) { animation-delay: 1.2s; }
+  .feature-list li .icon {
+    flex-shrink: 0;
+    width: 1.8em;
+    height: 1.8em;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+    margin-top: 0.05em;
+  }
+  .icon-cyan   { background: rgba(0,229,255,0.2); }
+  .icon-pink   { background: rgba(255,59,142,0.2); }
+  .icon-yellow { background: rgba(255,230,0,0.2); }
+  .icon-purple { background: rgba(108,59,255,0.2); }
+  .icon-orange { background: rgba(255,106,26,0.2); }
+
+  /* ── Date badge ── */
+  .date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, var(--c2), var(--c3));
+    padding: 0.5em 1.4em;
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: clamp(0.9rem, 1.8vw, 1.2rem);
+    letter-spacing: 0.04em;
+    animation: pulse 2s 1s ease-in-out infinite;
+    box-shadow: 0 0 30px rgba(108,59,255,0.5);
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 30px rgba(108,59,255,0.5); }
+    50% { box-shadow: 0 0 50px rgba(255,59,142,0.7); }
+  }
+
+  /* ── Divider ── */
+  .divider {
+    width: 80px;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--c2), var(--c3));
+    animation: expandWidth 0.7s 0.4s both;
+  }
+  @keyframes expandWidth { from{width:0} to{width:80px} }
+
+  /* ── Logo/Brand ── */
+  .brand-mark {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 6rem);
+    background: linear-gradient(135deg, var(--c4) 0%, var(--c2) 50%, var(--c3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.04em;
+    animation: zoomIn 0.9s 0.25s both;
+    filter: drop-shadow(0 0 40px rgba(0,229,255,0.4));
+  }
+  .brand-sub {
+    font-family: var(--font-body);
+    font-size: clamp(0.8rem, 1.5vw, 1rem);
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    animation: fadeUp 0.7s 0.5s both;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(28px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes zoomIn {
+    from { opacity:0; transform:scale(0.8); }
+    to   { opacity:1; transform:scale(1); }
+  }
+  @keyframes slideInLeft {
+    from { opacity:0; transform:translateX(-30px); }
+    to   { opacity:1; transform:translateX(0); }
+  }
+  @keyframes slideInRight {
+    from { opacity:0; transform:translateX(30px); }
+    to   { opacity:1; transform:translateX(0); }
+  }
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* ── Story prefix decoration ── */
+  .story-quote {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 11vw, 9rem);
+    line-height: 0.9;
+    background: linear-gradient(135deg, var(--c4) 0%, var(--c2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeUp 0.8s 0.2s both;
+    opacity: 0.15;
+    position: absolute;
+    top: 6vh;
+    left: 7vw;
+    user-select: none;
+  }
+
+  /* ── Navigation ── */
+  #nav {
+    position: fixed;
+    bottom: 2.5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 1000;
+    background: rgba(10,10,26,0.6);
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    backdrop-filter: blur(20px);
+  }
+  .nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--white);
+    opacity: 0.6;
+    transition: opacity 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+    font-size: 1.1rem;
+  }
+  .nav-btn:hover { opacity: 1; transform: scale(1.1); }
+  #slide-counter {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+    min-width: 48px;
+    text-align: center;
+  }
+  .progress-dots {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .dot.active {
+    background: var(--c4);
+    width: 18px;
+    border-radius: 3px;
+    box-shadow: 0 0 8px var(--c4);
+  }
+
+  /* ── Fullscreen btn ── */
+  #fs-btn {
+    position: fixed;
+    top: 2vh;
+    right: 2vw;
+    z-index: 1000;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--white);
+    opacity: 0.5;
+    cursor: pointer;
+    padding: 0.4rem 0.6rem;
+    font-size: 1rem;
+    transition: opacity 0.2s;
+    backdrop-filter: blur(10px);
+  }
+  #fs-btn:hover { opacity: 1; }
+
+  /* ── Slide number indicator top-right ── */
+  .slide-num {
+    position: absolute;
+    top: 3.5vh;
+    right: 4vw;
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 7vw, 5rem);
+    opacity: 0.06;
+    user-select: none;
+    z-index: 1;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .glass-card { padding: 1.5rem; }
+    .slide { padding: 5vw 6vw; }
+  }
+
+  /* ── Special: social network diagram ── */
+  .network-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+    animation: fadeUp 0.8s 0.6s both;
+  }
+  .net-node {
+    width: clamp(45px, 7vw, 65px);
+    height: clamp(45px, 7vw, 65px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1.1rem, 2vw, 1.6rem);
+    border: 2px solid;
+    position: relative;
+    animation: float1 4s ease-in-out infinite alternate;
+  }
+  .net-node:nth-child(odd) { animation-name: float2; }
+
+  /* ── Etapa card ── */
+  .etapa-badge {
+    font-family: var(--font-display);
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
+    letter-spacing: 0.2em;
+    padding: 0.3em 1em;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--c2), var(--c3));
+    display: inline-block;
+    animation: fadeUp 0.7s 0.2s both;
+  }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+  <!-- ── SLIDE 0: Story hook ── -->
+  <div class="slide s0 active" data-slide="0">
+    <div class="slide-bg"></div>
+    <div class="slide-num">01</div>
+    <div class="slide-content">
+      <div class="eyebrow">Dirección General de Nivel Superior · Ministerio de Educación · Provincia de Corrientes</div>
+      <div class="display-title">Nuevos superpoderes<br>& comunicación</div>
+      <div class="divider"></div>
+      <div class="sub">El nuevo poder en manos de nuestros docentes y estudiantes.</div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 1: ChatGPT aparece ── -->
+  <div class="slide s1" data-slide="1">
+    <div class="slide-bg"></div>
+    <div class="slide-num">02</div>
+    <div class="slide-content">
+      <div class="eyebrow">El punto de inflexión</div>
+      <div class="big-year">2022</div>
+      <div class="headline">En noviembre aparece<br><strong>ChatGPT</strong></div>
+      <div class="sub">El mundo nunca volvería a ser el mismo.</div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 2: 2023 asombro ── -->
+  <div class="slide s2" data-slide="2">
+    <div class="slide-bg"></div>
+    <div class="slide-num">03</div>
+    <div class="slide-content">
+      <div class="eyebrow">El año del asombro</div>
+      <div class="big-year">2023</div>
+      <div class="headline">Nos asombramos<br>y fue tema de conversación</div>
+      <div class="sub">Todos hablaban de ello. Pocos lo usaban en serio.</div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 3: 2024 cambios ── -->
+  <div class="slide s3" data-slide="3">
+    <div class="slide-bg"></div>
+    <div class="slide-num">04</div>
+    <div class="slide-content">
+      <div class="eyebrow">El año de los primeros cambios reales</div>
+      <div class="big-year">2024</div>
+      <div class="headline">Se observan cambios concretos</div>
+      <div class="glass-card">
+        <ul class="feature-list">
+          <li>
+            <div class="icon icon-cyan">📐</div>
+            <span><strong>Planificación de clases</strong> rediseñada con IA</span>
+          </li>
+          <li>
+            <div class="icon icon-yellow">🔍</div>
+            <span><strong>Acceso a la información</strong> completamente transformado</span>
+          </li>
+          <li>
+            <div class="icon icon-pink">📝</div>
+            <span><strong>Evaluación</strong> en revisión y redefinición</span>
+          </li>
+        </ul>
+      </div>
+      <div class="pill-row">
+        <span class="pill pill-cyan">ChatGPT</span>
+        <span class="pill pill-purple">Meta AI</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 4: 2025 contenido sintético ── -->
+  <div class="slide s4" data-slide="4">
+    <div class="slide-bg"></div>
+    <div class="slide-num">05</div>
+    <div class="slide-content">
+      <div class="eyebrow">La nueva normalidad</div>
+      <div class="big-year">2025</div>
+      <div class="headline">El contenido sintético<br>es <em>la regla</em></div>
+      <div class="sub">Ya no es la excepción. Es el punto de partida.</div>
+      <div class="pill-row">
+        <span class="pill pill-cyan">ChatGPT</span>
+        <span class="pill pill-purple">Claude</span>
+        <span class="pill pill-pink">Gemini</span>
+        <span class="pill pill-yellow">Meta AI</span>
+        <span class="pill pill-orange">Grok</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 5: 2026 agentes ── -->
+  <div class="slide s5" data-slide="5">
+    <div class="slide-bg"></div>
+    <div class="slide-num">06</div>
+    <div class="slide-content">
+      <div class="eyebrow">El año del poder real</div>
+      <div class="big-year" style="font-size:clamp(5rem,14vw,12rem)">2026</div>
+      <div class="headline">El poder pasa a los <strong>Agentes</strong></div>
+      <div class="glass-card">
+        <ul class="feature-list">
+          <li>
+            <div class="icon icon-yellow">⚡</div>
+            <span>Tienen capacidad de <strong>HACER</strong> y <strong>CONTROLAR</strong> — no solo responder</span>
+          </li>
+          <li>
+            <div class="icon icon-cyan">🤖</div>
+            <span><strong>Claude Code</strong> — construye software de forma autónoma</span>
+          </li>
+          <li>
+            <div class="icon icon-pink">🌐</div>
+            <span><strong>Google Antigravity</strong> — agentes de infraestructura</span>
+          </li>
+          <li>
+            <div class="icon icon-purple">💻</div>
+            <span><strong>ChatGPT Codex</strong> — desarrollo asistido por agentes</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 6: Presentamos ComAc ── -->
+  <div class="slide s6" data-slide="6">
+    <div class="slide-bg"></div>
+    <div class="slide-num">07</div>
+    <div class="slide-content">
+      <div class="eyebrow">Hoy presentamos</div>
+      <div class="brand-mark">ComAc</div>
+      <div class="brand-sub">Comunicación de Actividades</div>
+      <div class="divider"></div>
+      <div class="glass-card" style="margin-top:0.5rem">
+        <ul class="feature-list">
+          <li>
+            <div class="icon icon-purple">✨</div>
+            <span><strong>Totalmente desarrollado con Claude Code</strong></span>
+          </li>
+          <li>
+            <div class="icon icon-cyan">🏛️</div>
+            <span>Parte de la <strong>INTRANET</strong> de la Dirección General de Nivel Superior</span>
+          </li>
+          <li>
+            <div class="icon icon-pink">📍</div>
+            <span>Ministerio de Educación · Provincia de Corrientes</span>
+          </li>
+          <li>
+            <div class="icon icon-yellow">🩺</div>
+            <span>Un médico cardiólogo <strong>gana un concurso internacional de Desarrollo de Software</strong>, haciendo uso de una IA</span>
+          </li>
+          <li>
+            <div class="icon icon-orange">🚀</div>
+            <span><strong>Cualquiera de nuestros docentes y estudiantes</strong> pueden elaborar sus propias aplicaciones</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 7: Red Social ── -->
+  <div class="slide s7" data-slide="7">
+    <div class="slide-bg"></div>
+    <div class="slide-num">08</div>
+    <div class="slide-content">
+      <div class="eyebrow">¿Qué es ComAc?</div>
+      <div class="headline">Una <strong>RED SOCIAL</strong> específica<br>para el Nivel Superior</div>
+      <div class="divider"></div>
+      <div class="sub">
+        Diseñada para <strong>comunicar a toda la comunidad</strong><br>
+        de Nivel Superior de la Provincia de Corrientes.
+      </div>
+      <div class="glass-card" style="padding:1.4rem 2rem;margin-top:0">
+        <ul class="feature-list">
+          <li>
+            <div class="icon icon-cyan">🌐</div>
+            <span>Acceso en <strong><a href="https://dgescorrientes.net" target="_blank" style="color:var(--c4);text-decoration:none">dgescorrientes.net</a></strong></span>
+          </li>
+          <li>
+            <div class="icon icon-purple">📧</div>
+            <span>Usuarios y soporte: <strong><a href="mailto:equipotecnico@dgescorrientes.net" style="color:var(--c4);text-decoration:none">equipotecnico@dgescorrientes.net</a></strong></span>
+          </li>
+        </ul>
+      </div>
+      <div class="network-visual">
+        <div class="net-node" style="border-color:var(--c2);background:rgba(108,59,255,0.2)">🏫</div>
+        <div style="width:clamp(20px,4vw,40px);height:2px;background:linear-gradient(90deg,var(--c2),var(--c4))"></div>
+        <div class="net-node" style="border-color:var(--c4);background:rgba(0,229,255,0.15);width:clamp(55px,9vw,80px);height:clamp(55px,9vw,80px)">🏛️</div>
+        <div style="width:clamp(20px,4vw,40px);height:2px;background:linear-gradient(90deg,var(--c4),var(--c3))"></div>
+        <div class="net-node" style="border-color:var(--c3);background:rgba(255,59,142,0.2)">👩‍🏫</div>
+        <div style="width:clamp(20px,4vw,40px);height:2px;background:linear-gradient(90deg,var(--c3),var(--c5))"></div>
+        <div class="net-node" style="border-color:var(--c5);background:rgba(255,230,0,0.15)">👨‍🎓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 8: Primera Etapa ── -->
+  <div class="slide s8" data-slide="8">
+    <div class="slide-bg"></div>
+    <div class="slide-num">09</div>
+    <div class="slide-content">
+      <div class="etapa-badge">Primera Etapa</div>
+      <div class="date-badge">📅 20 de abril de 2026 — Presentación</div>
+      <div class="glass-card">
+        <ul class="feature-list">
+          <li>
+            <div class="icon icon-cyan">🌐</div>
+            <span>Acceso desde <strong>dgescorrientes.net</strong></span>
+          </li>
+          <li>
+            <div class="icon icon-purple">📋</div>
+            <span><strong>El Muro doble</strong>: Actividades Realizadas y A Realizarse</span>
+          </li>
+          <li>
+            <div class="icon icon-yellow">🌓</div>
+            <span><strong>Modo Claro / Oscuro</strong></span>
+          </li>
+          <li>
+            <div class="icon icon-pink">✅</div>
+            <span><strong>Aprobación Jurisdiccional</strong></span>
+          </li>
+          <li>
+            <div class="icon icon-orange">📝</div>
+            <span>Envío de <strong>Formulario Online</strong> para definición de Referentes Institucionales</span>
+          </li>
+          <li>
+            <div class="icon icon-cyan">🚀</div>
+            <span>Carga de primeras <strong>actividades institucionales</strong></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 9: Segunda Etapa ── -->
+  <div class="slide s9" data-slide="9">
+    <div class="slide-bg"></div>
+    <div class="slide-num">10</div>
+    <div class="slide-content">
+      <div class="etapa-badge" style="background:linear-gradient(135deg,var(--c4),var(--c2))">Segunda Etapa</div>
+      <div class="date-badge" style="background:linear-gradient(135deg,var(--c4),var(--c2))">📅 21 al 24 de abril de 2026</div>
+      <div class="headline" style="margin-top:0.5rem">Definición y carga<br>de <strong>usuarios</strong></div>
+      <div class="divider" style="background:linear-gradient(90deg,var(--c4),var(--c2))"></div>
+      <div class="glass-card">
+        <ul class="feature-list">
+          <li>
+            <div class="icon icon-cyan">👥</div>
+            <span>Definición y alta de <strong>Referentes Institucionales</strong></span>
+          </li>
+          <li>
+            <div class="icon icon-pink">🗑️</div>
+            <span><strong>Eliminación de los datos de prueba</strong> — entorno limpio</span>
+          </li>
+          <li>
+            <div class="icon icon-yellow">🔐</div>
+            <span>Activación de cuentas y <strong>configuración de permisos</strong></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 10: Tercera Etapa ── -->
+  <div class="slide s10" data-slide="10">
+    <div class="slide-bg"></div>
+    <div class="slide-num">11</div>
+    <div class="slide-content">
+      <div class="etapa-badge" style="background:linear-gradient(135deg,var(--c3),var(--c6))">Tercera Etapa</div>
+      <div class="headline" style="margin-top:0.5rem">¡La comunidad toma<br>la <strong>palabra</strong>!</div>
+      <div class="divider" style="background:linear-gradient(90deg,var(--c3),var(--c6))"></div>
+      <div class="glass-card">
+        <ul class="feature-list">
+          <li>
+            <div class="icon icon-pink">📣</div>
+            <span>Carga de comunicaciones por parte de <strong>toda la comunidad de Nivel Superior</strong></span>
+          </li>
+          <li>
+            <div class="icon icon-orange">🏫</div>
+            <span><strong>Institutos</strong>: ISFD e ISFT publican sus actividades</span>
+          </li>
+          <li>
+            <div class="icon icon-yellow">🏛️</div>
+            <span><strong>Dirección</strong>: comparte novedades y comunicados oficiales</span>
+          </li>
+        </ul>
+      </div>
+      <div class="brand-mark" style="font-size:clamp(2rem,5vw,3.5rem);margin-top:0.5rem">ComAc</div>
+      <div class="sub" style="font-size:clamp(0.7rem,1.2vw,0.9rem);opacity:0.5">DGES · Ministerio de Educación · Corrientes · 2026</div>
+    </div>
+  </div>
+
+</div><!-- #deck -->
+
+<!-- ── Navigation ── -->
+<nav id="nav">
+  <button class="nav-btn" id="prev-btn" title="Anterior">&#8592;</button>
+  <div class="progress-dots" id="dots"></div>
+  <span id="slide-counter">1 / 11</span>
+  <button class="nav-btn" id="next-btn" title="Siguiente">&#8594;</button>
+</nav>
+
+<button id="fs-btn" title="Pantalla completa">⛶</button>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsContainer = document.getElementById('dots');
+  const counter = document.getElementById('slide-counter');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const total = slides.length;
+  let current = 0;
+  let isAnimating = false;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsContainer.appendChild(d);
+  });
+  const dots = document.querySelectorAll('.dot');
+
+  function goTo(idx) {
+    // Wrap around: after last go to first, before first go to last
+    if (idx >= total) idx = 0;
+    if (idx < 0) idx = total - 1;
+    if (idx === current || isAnimating) return;
+    isAnimating = true;
+    const prev = current;
+    current = idx;
+
+    // Exit old slide
+    slides[prev].classList.add('exit');
+    slides[prev].classList.remove('active');
+
+    // Reset animations on new slide by forcing reflow
+    const newSlide = slides[current];
+    newSlide.querySelectorAll('[style*="animation"], .eyebrow, .display-title, .big-year, .headline, .sub, .pill-row, .glass-card, .divider, .brand-mark, .brand-sub, .date-badge, .etapa-badge, .feature-list li, .network-visual').forEach(el => {
+      el.style.animation = 'none';
+      el.offsetHeight; // reflow
+      el.style.animation = '';
+    });
+
+    setTimeout(() => {
+      slides[prev].classList.remove('exit');
+      newSlide.classList.add('active');
+      isAnimating = false;
+    }, 500);
+
+    // Update UI
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    counter.textContent = `${current + 1} / ${total}`;
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp') { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'f' || e.key === 'F') toggleFS();
+  });
+
+  // Touch swipe
+  let touchX = null;
+  document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) dx < 0 ? goTo(current + 1) : goTo(current - 1);
+    touchX = null;
+  }, { passive: true });
+
+  // Init state
+  counter.textContent = `1 / ${total}`;
+
+  // Fullscreen
+  function toggleFS() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen();
+  }
+  document.getElementById('fs-btn').addEventListener('click', toggleFS);
+</script>
+</body>
+</html>
